@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="msv_SimpleMultiStateView">
+        <attr name="msv_emptyView" format="reference"/>
+        <attr name="msv_loadingView" format="reference"/>
+        <attr name="msv_failView" format="reference"/>
+        <attr name="msv_contentView" format="reference"/>
+        <attr name="msv_nonetView" format="reference"/>
+        <attr name="msv_viewState" format="enum">
+            <enum name="content" value="1001"/>
+            <enum name="empty" value="1002"/>
+            <enum name="loading" value="1003"/>
+            <enum name="fail" value="1004"/>
+            <enum name="nonet" value="1005"/>
+        </attr>
+    </declare-styleable>
+
+    <!--dialog属性-->
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimAmount">0.8</item>
+        <item name="colorAccent">#FFFFFF</item>
+    </style>
+
+</resources>

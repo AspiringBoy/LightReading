@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".WelcomActivity">
+
+    <RelativeLayout
+        android:id="@+id/bottom_gif_rll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gif_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="102dp"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/loadingv" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/welcom_ad_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_gif_rll"
+        android:scaleType="centerCrop"
+        android:src="@drawable/welcom_bg" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/frameLayout">
+
+        <TextView
+            android:id="@+id/splash_ad_ignor_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/splash_ad_ignor_bg"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center"
+            android:text="跳过广告"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+
+    </FrameLayout>
+
+</RelativeLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/prt_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.dreamer_yy.lightreading.widget.SimpleMultiStateView
+            android:id="@+id/state_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rclv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        </com.dreamer_yy.lightreading.widget.SimpleMultiStateView>
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/top_toast_rll"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/toast_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/news_toast"
+            android:layout_centerInParent="true"
+            android:textColor="#3393D5"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+</FrameLayout>
