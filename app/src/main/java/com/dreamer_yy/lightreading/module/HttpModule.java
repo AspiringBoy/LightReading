@@ -26,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HttpModule {
 
     @Provides
-    public OkHttpClient.Builder provideOkhttpBuilder(){
+    public OkHttpClient.Builder provideOkhttpBuilder() {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
         Cache httpCache = new Cache(new File(MyApp.getContext().getCacheDir(), "httpCache"), 100 * 1024 * 1024);
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -42,7 +42,7 @@ public class HttpModule {
     }
 
     @Provides
-    public NewsApi provideNewsApi(OkHttpClient.Builder builder){
+    public NewsApi provideNewsApi(OkHttpClient.Builder builder) {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

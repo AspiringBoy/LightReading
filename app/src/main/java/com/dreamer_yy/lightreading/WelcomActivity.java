@@ -61,7 +61,7 @@ public class WelcomActivity extends BaseActivity {
     @Override
     public void bindView(View view, Bundle saveInstanceState) {
         final GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
-        gifDrawable.setLoopCount(1);
+//        gifDrawable.setLoopCount(1);
         gifImageView.postDelayed(new Runnable() {
             @Override
             public void run() {
