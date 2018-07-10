@@ -104,4 +104,10 @@ public class RecCirImageView extends AppCompatImageView {
         xfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
 
     }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+    }
 }

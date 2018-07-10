@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/LightReading.iml" filepath="$PROJECT_DIR$/LightReading.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/reccirimageview/reccirimageview.iml" filepath="$PROJECT_DIR$/reccirimageview/reccirimageview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/reccirimageview/reccirimageview.iml" filepath="$PROJECT_DIR$/reccirimageview/reccirimageview.iml" />
     </modules>
   </component>
 </project>
