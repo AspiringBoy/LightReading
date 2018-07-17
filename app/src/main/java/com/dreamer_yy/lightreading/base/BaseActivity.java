@@ -32,7 +32,8 @@ public abstract class BaseActivity<T1 extends BaseContract.BasePresenter> extend
     @Nullable
     @Inject
     protected T1 mPresenter;
-//    @BindView(R.id.simplemultistateview)
+    @Nullable
+    @BindView(R.id.state_view)
     SimpleMultiStateView mSimpleMultiStateView;
     protected BGASwipeBackHelper mSwipeBackHelper;
     private View mRootView;

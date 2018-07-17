@@ -35,7 +35,7 @@ public abstract class BaseFragment<T1 extends BaseContract.BasePresenter> extend
     @Inject
     protected T1 mPresenter;
     @Nullable
-//    @BindView(R.id.SimpleMultiStateView)
+    @BindView(R.id.state_view)
     SimpleMultiStateView mSimpleMultiStateView;
     private Unbinder unbinder;
 
