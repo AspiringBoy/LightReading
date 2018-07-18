@@ -1,6 +1,7 @@
 package com.dreamer_yy.lightreading.component;
 
 import com.dreamer_yy.lightreading.ui.jiandan.fragment.JianDanFragment;
+import com.dreamer_yy.lightreading.ui.news.fragment.DetailFragment;
 import com.dreamer_yy.lightreading.ui.news.fragment.NewsFragment;
 import com.dreamer_yy.lightreading.ui.personal.PersonalFragment;
 import com.dreamer_yy.lightreading.ui.video.fragment.VideoFragment;
@@ -20,4 +21,6 @@ public interface HttpComponent {
     void inject(VideoFragment videoFragment);
 
     void inject(PersonalFragment personalFragment);
+
+    void inject(DetailFragment detailFragment);
 }
