@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.dreamer_yy.lightreading.R;
 import com.dreamer_yy.lightreading.bean.NewsDetail;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class NewsDetailAdapter extends BaseMultiItemQuickAdapter<NewsDetail.Item
     public NewsDetailAdapter(List<NewsDetail.ItemBean> data, Context context) {
         super(data);
         mContext = context;
-
+        addItemType(NewsDetail.ItemBean.TYPE_DOC_TITLEIMG, R.layout.item_detail_doc);
     }
 
     @Override
