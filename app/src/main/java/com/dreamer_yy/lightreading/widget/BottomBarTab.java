@@ -56,7 +56,7 @@ public class BottomBarTab extends LinearLayout {
         titleParams.topMargin = ContextUtils.dip2px(mContext,2.5f);
         titleParams.bottomMargin = ContextUtils.dip2px(mContext,2.5f);
         mTabTitle.setTextColor(ContextCompat.getColor(mContext, R.color.tab_unselect));
-        mTabTitle.setTextSize(ContextUtils.dip2px(mContext,3.0f));
+        mTabTitle.setTextSize(ContextUtils.dip2px(mContext,10f));
         mTabTitle.setText(tabTitle);
         mTabTitle.setLayoutParams(titleParams);
 

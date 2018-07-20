@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public abstract class BaseFragment<T1 extends BaseContract.BasePresenter> extend
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        Log.d("Dreamer__YY:", "onCreateView: ");
         if (mRootView != null) {
             ViewGroup parent = (ViewGroup) mRootView.getParent();
             if (parent != null) {
@@ -64,22 +66,26 @@ public abstract class BaseFragment<T1 extends BaseContract.BasePresenter> extend
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        Log.d("Dreamer__YY:", "setUserVisibleHint: ");
     }
 
     @Override
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
+        Log.d("Dreamer__YY:", "onLazyInitView: ");
         initData();
     }
 
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
+        Log.d("Dreamer__YY:", "onSupportVisible: ");
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("Dreamer__YY:", "onViewCreated: ");
         initInjector(MyApp.getInstance().getApplicationComponent());
         attachView();
         initStateView();
