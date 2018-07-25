@@ -4,6 +4,7 @@
     <string name="text_nonet">网络异常！</string>
     <string name="text_loading">加载中...</string>
     <string name="news_toast">已为您推荐了%1$s条新资讯</string>
+    <string name="news_commentsize">%1$s评论</string>
 
     <string-array name="news_channel">
         <item>头条</item>
