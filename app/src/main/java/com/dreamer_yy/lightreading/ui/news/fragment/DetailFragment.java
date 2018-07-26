@@ -1,6 +1,7 @@
 package com.dreamer_yy.lightreading.ui.news.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +14,20 @@ import com.dreamer_yy.lightreading.base.BaseFragment;
 import com.dreamer_yy.lightreading.bean.NewsDetail;
 import com.dreamer_yy.lightreading.component.ApplicationComponent;
 import com.dreamer_yy.lightreading.component.DaggerHttpComponent;
+import com.dreamer_yy.lightreading.ui.adapter.NewsDetailAdapter;
 import com.dreamer_yy.lightreading.ui.news.contract.DetailContract;
 import com.dreamer_yy.lightreading.ui.news.presenter.DetailPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by Dreamer__YY on 2018/5/21.
@@ -38,6 +44,9 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
     @BindView(R.id.top_toast_rll)
     RelativeLayout topToastRll;
     Unbinder unbinder;
+    private NewsDetailAdapter detailAdapter;
+    private ArrayList<NewsDetail.ItemBean> beanList;
+    private ArrayList<NewsDetail.ItemBean> bannerList;
 
     public static DetailFragment newInstance(String newsid, int position) {
         Bundle args = new Bundle();
@@ -69,6 +78,24 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
 
     @Override
     public void bindView(View view, Bundle saveInstanceState) {
+        ptrLayout.setPtrHandler(new PtrHandler() {
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame,rclv,header);
+            }
+
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+
+            }
+        });
+        ptrLayout.disableWhenHorizontalMove(true);
+        rclv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        beanList = new ArrayList<>();
+        bannerList = new ArrayList<>();
+        detailAdapter = new NewsDetailAdapter(beanList, getActivity());
+        rclv.setAdapter(detailAdapter);
+        detailAdapter.setEnableLoadMore(true);
 
     }
 
