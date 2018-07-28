@@ -9,14 +9,17 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.dreamer_yy.lightreading.R;
 import com.dreamer_yy.lightreading.base.BaseFragment;
 import com.dreamer_yy.lightreading.bean.NewsDetail;
 import com.dreamer_yy.lightreading.component.ApplicationComponent;
 import com.dreamer_yy.lightreading.component.DaggerHttpComponent;
+import com.dreamer_yy.lightreading.net.NewsApi;
 import com.dreamer_yy.lightreading.ui.adapter.NewsDetailAdapter;
 import com.dreamer_yy.lightreading.ui.news.contract.DetailContract;
 import com.dreamer_yy.lightreading.ui.news.presenter.DetailPresenter;
+import com.dreamer_yy.lightreading.widget.CustomLoadMoreView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,11 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
     private NewsDetailAdapter detailAdapter;
     private ArrayList<NewsDetail.ItemBean> beanList;
     private ArrayList<NewsDetail.ItemBean> bannerList;
+    private String newsid;
+    private int position;
+    private int upPullNum = 1;
+    private int downPullNum = 1;
+    private boolean isRemoveHeaderView = false;
 
     public static DetailFragment newInstance(String newsid, int position) {
         Bundle args = new Bundle();
@@ -73,7 +81,10 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
 
     @Override
     public void initData() {
-
+        if (getArguments() == null) return;
+        newsid = getArguments().getString("newsid");
+        position = getArguments().getInt("position");
+        mPresenter.getData(newsid, NewsApi.ACTION_DEFAULT, 1);
     }
 
     @Override
@@ -86,7 +97,8 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
 
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-
+                isRemoveHeaderView = true;
+                mPresenter.getData(newsid, NewsApi.ACTION_DOWN, downPullNum);
             }
         });
         ptrLayout.disableWhenHorizontalMove(true);
@@ -96,6 +108,14 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
         detailAdapter = new NewsDetailAdapter(beanList, getActivity());
         rclv.setAdapter(detailAdapter);
         detailAdapter.setEnableLoadMore(true);
+        detailAdapter.setLoadMoreView(new CustomLoadMoreView());
+        detailAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        detailAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                mPresenter.getData(newsid, NewsApi.ACTION_UP, upPullNum);
+            }
+        },rclv);
 
     }
 
