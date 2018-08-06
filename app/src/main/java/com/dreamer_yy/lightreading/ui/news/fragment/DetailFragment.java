@@ -6,10 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.dreamer_yy.lightreading.R;
 import com.dreamer_yy.lightreading.base.BaseFragment;
 import com.dreamer_yy.lightreading.bean.NewsDetail;
@@ -116,7 +119,18 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
                 mPresenter.getData(newsid, NewsApi.ACTION_UP, upPullNum);
             }
         },rclv);
+        rclv.addOnItemTouchListener(new OnItemClickListener() {
+            @Override
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
 
+            }
+        });
+        rclv.addOnItemTouchListener(new OnItemChildClickListener() {
+            @Override
+            public void onSimpleItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+
+            }
+        });
     }
 
     @Override
