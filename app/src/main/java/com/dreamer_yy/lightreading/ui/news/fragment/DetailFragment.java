@@ -1,12 +1,15 @@
 package com.dreamer_yy.lightreading.ui.news.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +25,12 @@ import com.dreamer_yy.lightreading.net.NewsApi;
 import com.dreamer_yy.lightreading.ui.adapter.NewsDetailAdapter;
 import com.dreamer_yy.lightreading.ui.news.contract.DetailContract;
 import com.dreamer_yy.lightreading.ui.news.presenter.DetailPresenter;
+import com.dreamer_yy.lightreading.utils.ImageLoaderUtils;
 import com.dreamer_yy.lightreading.widget.CustomLoadMoreView;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.loader.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +66,8 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
     private int upPullNum = 1;
     private int downPullNum = 1;
     private boolean isRemoveHeaderView = false;
+    private View rclvHeaderView;
+    private Banner headerBanner;
 
     public static DetailFragment newInstance(String newsid, int position) {
         Bundle args = new Bundle();
@@ -122,7 +132,8 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
         rclv.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+                NewsDetail.ItemBean itemBean = (NewsDetail.ItemBean) adapter.getItem(position);
+                toRead(itemBean);
             }
         });
         rclv.addOnItemTouchListener(new OnItemChildClickListener() {
@@ -131,6 +142,30 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
 
             }
         });
+
+        rclvHeaderView = LayoutInflater.from(getActivity()).inflate(R.layout.news_detail_headerview, null);
+        headerBanner = ((Banner) rclvHeaderView.findViewById(R.id.banner));
+        headerBanner.setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)
+                .setDelayTime(3000)
+                .setIndicatorGravity(BannerConfig.RIGHT)
+                .setImageLoader(new ImageLoader() {
+                    @Override
+                    public void displayImage(Context context, Object path, ImageView imageView) {
+                        ImageLoaderUtils.loadImage(context,path,imageView);
+                    }
+                })
+                .setOnBannerListener(new OnBannerListener() {
+                    @Override
+                    public void OnBannerClick(int position) {
+
+                    }
+                });
+
+
+    }
+
+    private void toRead(NewsDetail.ItemBean itemBean) {
+
     }
 
     @Override
