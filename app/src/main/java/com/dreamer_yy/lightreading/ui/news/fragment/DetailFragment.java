@@ -1,6 +1,7 @@
 package com.dreamer_yy.lightreading.ui.news.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,11 +23,17 @@ import com.dreamer_yy.lightreading.bean.NewsDetail;
 import com.dreamer_yy.lightreading.component.ApplicationComponent;
 import com.dreamer_yy.lightreading.component.DaggerHttpComponent;
 import com.dreamer_yy.lightreading.net.NewsApi;
+import com.dreamer_yy.lightreading.net.NewsUtils;
 import com.dreamer_yy.lightreading.ui.adapter.NewsDetailAdapter;
 import com.dreamer_yy.lightreading.ui.news.contract.DetailContract;
 import com.dreamer_yy.lightreading.ui.news.presenter.DetailPresenter;
 import com.dreamer_yy.lightreading.utils.ImageLoaderUtils;
 import com.dreamer_yy.lightreading.widget.CustomLoadMoreView;
+import com.dreamer_yy.lightreading.widget.NewsDelPop;
+import com.flyco.animation.SlideEnter.SlideRightEnter;
+import com.flyco.animation.SlideExit.SlideRightExit;
+import com.github.florent37.viewanimator.AnimationListener;
+import com.github.florent37.viewanimator.ViewAnimator;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -68,6 +75,7 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
     private boolean isRemoveHeaderView = false;
     private View rclvHeaderView;
     private Banner headerBanner;
+    private NewsDelPop newsDelPop;
 
     public static DetailFragment newInstance(String newsid, int position) {
         Bundle args = new Bundle();
@@ -157,15 +165,74 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
                 .setOnBannerListener(new OnBannerListener() {
                     @Override
                     public void OnBannerClick(int position) {
-
+                        if (bannerList.size() < 1) return;
+                        bannerToRead(bannerList.get(position));
                     }
                 });
 
-
+        newsDelPop = new NewsDelPop(getActivity());
+        newsDelPop.alignCenter(false)
+                .widthScale(0.95f)
+                .showAnim(new SlideRightEnter())
+                .dismissAnim(new SlideRightExit())
+                .offset(-100,0)
+                .dimEnabled(true)
+                .setNolikeClickListener(new NewsDelPop.INolikeClickListener() {
+                    @Override
+                    public void onNoLikeClick(int position) {
+                        newsDelPop.dismiss();
+                        detailAdapter.remove(position);
+                        showToast(0,false);
+                    }
+                });
     }
 
     private void toRead(NewsDetail.ItemBean itemBean) {
 
+    }
+
+    private void bannerToRead(NewsDetail.ItemBean itemBean) {
+        if (itemBean == null) {
+            return;
+        }
+//        switch (itemBean.getType()) {
+//            case NewsUtils.TYPE_DOC:
+//                Intent intent = new Intent(getActivity(), ArticleReadActivity.class);
+//                intent.putExtra("aid", itemBean.getDocumentId());
+//                startActivity(intent);
+//                break;
+//            case NewsUtils.TYPE_SLIDE:
+//                ImageBrowseActivity.launch(getActivity(), itemBean);
+//                break;
+//            case NewsUtils.TYPE_ADVERT:
+//                AdvertActivity.launch(getActivity(), itemBean.getLink().getWeburl());
+//                break;
+//            case NewsUtils.TYPE_PHVIDEO:
+//                T("TYPE_PHVIDEO");
+//                break;
+//        }
+    }
+
+    private void showToast(int num, boolean isRefresh) {
+        if (isRefresh) {
+            toastTv.setText(String.format(getResources().getString(R.string.news_toast), num + ""));
+        } else {
+            toastTv.setText("将为你减少此类内容");
+        }
+        topToastRll.setVisibility(View.VISIBLE);
+        ViewAnimator.animate(topToastRll)
+                .newsPaper()
+                .duration(1000)
+                .start()
+                .onStop(new AnimationListener.Stop() {
+                    @Override
+                    public void onStop() {
+                        ViewAnimator.animate(topToastRll)
+                                .bounceOut()
+                                .duration(1000)
+                                .start();
+                    }
+                });
     }
 
     @Override
