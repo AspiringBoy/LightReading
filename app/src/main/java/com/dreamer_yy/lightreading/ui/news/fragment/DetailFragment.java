@@ -25,6 +25,7 @@ import com.dreamer_yy.lightreading.component.DaggerHttpComponent;
 import com.dreamer_yy.lightreading.net.NewsApi;
 import com.dreamer_yy.lightreading.net.NewsUtils;
 import com.dreamer_yy.lightreading.ui.adapter.NewsDetailAdapter;
+import com.dreamer_yy.lightreading.ui.news.activity.ArticleReadActivity;
 import com.dreamer_yy.lightreading.ui.news.contract.DetailContract;
 import com.dreamer_yy.lightreading.ui.news.presenter.DetailPresenter;
 import com.dreamer_yy.lightreading.utils.ImageLoaderUtils;
@@ -195,22 +196,22 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
         if (itemBean == null) {
             return;
         }
-//        switch (itemBean.getType()) {
-//            case NewsUtils.TYPE_DOC:
-//                Intent intent = new Intent(getActivity(), ArticleReadActivity.class);
-//                intent.putExtra("aid", itemBean.getDocumentId());
-//                startActivity(intent);
-//                break;
-//            case NewsUtils.TYPE_SLIDE:
+        switch (itemBean.getType()) {
+            case NewsUtils.TYPE_DOC:
+                Intent intent = new Intent(getActivity(), ArticleReadActivity.class);
+                intent.putExtra("aid", itemBean.getDocumentId());
+                startActivity(intent);
+                break;
+            case NewsUtils.TYPE_SLIDE:
 //                ImageBrowseActivity.launch(getActivity(), itemBean);
-//                break;
-//            case NewsUtils.TYPE_ADVERT:
+                break;
+            case NewsUtils.TYPE_ADVERT:
 //                AdvertActivity.launch(getActivity(), itemBean.getLink().getWeburl());
-//                break;
-//            case NewsUtils.TYPE_PHVIDEO:
+                break;
+            case NewsUtils.TYPE_PHVIDEO:
 //                T("TYPE_PHVIDEO");
-//                break;
-//        }
+                break;
+        }
     }
 
     private void showToast(int num, boolean isRefresh) {
