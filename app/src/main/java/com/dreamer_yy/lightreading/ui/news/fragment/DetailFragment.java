@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -243,22 +245,57 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
 
     @Override
     public void loadBannerData(NewsDetail newsDetail) {
-
+        bannerList.clear();
+        ArrayList<String> urlList = new ArrayList<>();
+        ArrayList<String> titleList = new ArrayList<>();
+        for (NewsDetail.ItemBean itemBean : newsDetail.getItem()) {
+            if (!TextUtils.isEmpty(itemBean.getThumbnail())) {
+                bannerList.add(itemBean);
+                urlList.add(itemBean.getThumbnail());
+                titleList.add(itemBean.getTitle());
+            }
+        }
+        if (urlList.size() > 0) {
+            headerBanner.setImages(urlList);
+            headerBanner.setBannerTitles(titleList);
+            headerBanner.start();
+            if (detailAdapter.getHeaderLayoutCount() < 1) {
+                detailAdapter.addHeaderView(rclvHeaderView);
+            }
+        }
     }
 
     @Override
     public void loadTopNewsData(NewsDetail newsDetail) {
-
+        Log.d("Dreamer__YY:", "loadTopNewsData: ");
     }
 
     @Override
     public void loadData(List<NewsDetail.ItemBean> itemBeanList) {
-
+        if (itemBeanList == null || itemBeanList.size() == 0) {
+            ptrLayout.refreshComplete();
+            showFaild();
+        }else {
+            downPullNum++;
+            if (isRemoveHeaderView) {
+                detailAdapter.removeAllHeaderView();
+            }
+            detailAdapter.setNewData(itemBeanList);
+            ptrLayout.refreshComplete();
+            showToast(itemBeanList.size(),true);
+            showSuccess();
+        }
     }
 
     @Override
     public void loadMoreData(List<NewsDetail.ItemBean> itemBeanList) {
-
+        if (itemBeanList == null || itemBeanList.size() == 0) {
+            detailAdapter.loadMoreFail();
+        } else {
+            upPullNum++;
+            detailAdapter.addData(itemBeanList);
+            detailAdapter.loadMoreComplete();
+        }
     }
 
 }

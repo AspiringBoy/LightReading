@@ -26,8 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_gif_rll"
-        android:scaleType="centerCrop"
-        android:src="@drawable/welcom_bg" />
+        android:scaleType="centerCrop"/>
 
     <FrameLayout
         android:layout_width="wrap_content"

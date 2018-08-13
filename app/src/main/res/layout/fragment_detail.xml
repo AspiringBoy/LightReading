@@ -25,6 +25,7 @@
     <RelativeLayout
         android:id="@+id/top_toast_rll"
         android:layout_width="match_parent"
+        android:background="#D6E9F6"
         android:layout_height="30dp"
         android:visibility="gone">
 

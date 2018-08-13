@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
@@ -21,15 +22,15 @@ import java.util.Date;
 
 public class BaseMultiStateView extends FrameLayout {
 
-    public static final int STATE_CONTENT = 1001;
-    public static final int STATE_EMPTY = 1002;
-    public static final int STATE_LOADING= 1003;
-    public static final int STATE_FAILD= 1004;
-    public static final int STATE_NONET= 1005;
+    public static final int STATE_CONTENT = 10001;
+    public static final int STATE_EMPTY = 10002;
+    public static final int STATE_LOADING= 10003;
+    public static final int STATE_FAILD= 10004;
+    public static final int STATE_NONET= 10005;
     private SparseIntArray mLayoutStateArray = new SparseIntArray();
     private SparseArray<View> mViewStateArray = new SparseArray<>();
     private View mContentView;
-    private int mCurrentState;
+    private int mCurrentState = STATE_CONTENT;
     private OnReloadListener onReloadListener;
     private OnInflateListener onInflateListener;
 
@@ -77,6 +78,7 @@ public class BaseMultiStateView extends FrameLayout {
 
     private void validStateView(View child) {
         if (isValidContentView(child)){
+            Log.d("Dreamer__YY:", "validStateView: yy");
             mContentView = child;
             mViewStateArray.put(STATE_CONTENT,child);
         } else if (mCurrentState != STATE_CONTENT) {
