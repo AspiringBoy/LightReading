@@ -2,6 +2,7 @@ package com.dreamer_yy.lightreading.net;
 
 import android.support.annotation.StringDef;
 
+import com.dreamer_yy.lightreading.bean.NewsArticleBean;
 import com.dreamer_yy.lightreading.bean.NewsDetail;
 
 import java.lang.annotation.Retention;
@@ -45,5 +46,13 @@ public class NewsApi {
 
     public Observable<List<NewsDetail>> getNewsDetail(String id,@Action String action,int pullNum){
         return mServiceApi.getNewsDetail(id,action,pullNum);
+    }
+
+    public Observable<NewsArticleBean> getNewsArticle(String aid){
+        if (aid.startsWith("sub")){
+            return mServiceApi.getNewsArticleWithSub(aid);
+        }else {
+            return mServiceApi.getNewsArticleWithCmpp(ApiConstants.sGetNewsArticleCmppApi + ApiConstants.sGetNewsArticleDocCmppApi,aid);
+        }
     }
 }

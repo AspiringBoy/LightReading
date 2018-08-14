@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.dreamer_yy.lightreading.MyApp;
 import com.dreamer_yy.lightreading.R;
 import com.dreamer_yy.lightreading.base.BaseFragment;
 import com.dreamer_yy.lightreading.bean.NewsDetail;
@@ -30,6 +31,7 @@ import com.dreamer_yy.lightreading.ui.adapter.NewsDetailAdapter;
 import com.dreamer_yy.lightreading.ui.news.activity.ArticleReadActivity;
 import com.dreamer_yy.lightreading.ui.news.contract.DetailContract;
 import com.dreamer_yy.lightreading.ui.news.presenter.DetailPresenter;
+import com.dreamer_yy.lightreading.utils.ContextUtils;
 import com.dreamer_yy.lightreading.utils.ImageLoaderUtils;
 import com.dreamer_yy.lightreading.widget.CustomLoadMoreView;
 import com.dreamer_yy.lightreading.widget.NewsDelPop;
@@ -150,7 +152,29 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
         rclv.addOnItemTouchListener(new OnItemChildClickListener() {
             @Override
             public void onSimpleItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-
+                NewsDetail.ItemBean itemBean = (NewsDetail.ItemBean) adapter.getItem(position);
+                switch (view.getId()) {
+                    case R.id.iv_close:
+                        view.getHeight();
+                        int[] location = new int[2];
+                        view.getLocationInWindow(location);
+                        Log.i("DetailFragment", "点击的item的高度:" + view.getHeight() + "x值:" + location[0] + "y值" + location[1]);
+                        if (itemBean.getStyle() == null) return;
+                        if (ContextUtils.getSreenWidth(MyApp.getContext()) - 50 - location[1] < ContextUtils.dip2px(MyApp.getContext(), 80)) {
+                            newsDelPop
+                                    .anchorView(view)
+                                    .gravity(Gravity.TOP)
+                                    .setBackReason(itemBean.getStyle().getBackreason(), true, position)
+                                    .show();
+                        } else {
+                            newsDelPop
+                                    .anchorView(view)
+                                    .gravity(Gravity.BOTTOM)
+                                    .setBackReason(itemBean.getStyle().getBackreason(), false, position)
+                                    .show();
+                        }
+                        break;
+                }
             }
         });
 

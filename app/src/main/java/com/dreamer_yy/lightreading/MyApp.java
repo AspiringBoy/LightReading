@@ -27,6 +27,7 @@ public class MyApp extends LitePalApplication{
         //初始化注射器(依赖注入)
         applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
+                .httpModule(new HttpModule())
                 .build();
         //初始化litepal数据库
         LitePal.initialize(this);

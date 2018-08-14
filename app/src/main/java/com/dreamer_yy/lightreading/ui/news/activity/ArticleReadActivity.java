@@ -13,7 +13,9 @@ import com.dreamer_yy.lightreading.R;
 import com.dreamer_yy.lightreading.base.BaseActivity;
 import com.dreamer_yy.lightreading.bean.NewsArticleBean;
 import com.dreamer_yy.lightreading.component.ApplicationComponent;
+import com.dreamer_yy.lightreading.component.DaggerHttpComponent;
 import com.dreamer_yy.lightreading.ui.news.contract.ArticleReadContract;
+import com.dreamer_yy.lightreading.ui.news.presenter.ArticleReadPresenter;
 import com.dreamer_yy.lightreading.widget.ObservableScrollView;
 import com.dreamer_yy.lightreading.widget.SimpleMultiStateView;
 
@@ -21,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ArticleReadActivity extends BaseActivity implements ArticleReadContract.View {
+public class ArticleReadActivity extends BaseActivity<ArticleReadPresenter> implements ArticleReadContract.View {
 
     @BindView(R.id.iv_back)
     ImageView ivBack;
@@ -63,7 +65,11 @@ public class ArticleReadActivity extends BaseActivity implements ArticleReadCont
 
     @Override
     public void initInjector(ApplicationComponent applicationComponent) {
-
+        DaggerHttpComponent
+                .builder()
+                .applicationComponent(applicationComponent)
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -83,6 +89,10 @@ public class ArticleReadActivity extends BaseActivity implements ArticleReadCont
 
     @Override
     public void loadData(NewsArticleBean bean) {
+        if (bean == null) {
+            showFaild();
+            return;
+        }
 
     }
 }
