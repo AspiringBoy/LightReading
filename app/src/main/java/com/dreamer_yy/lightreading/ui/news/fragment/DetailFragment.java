@@ -215,7 +215,28 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
     }
 
     private void toRead(NewsDetail.ItemBean itemBean) {
+        if (itemBean == null) {
+            return;
+        }
+        switch (itemBean.getItemType()) {
+            case NewsDetail.ItemBean.TYPE_DOC_TITLEIMG:
+            case NewsDetail.ItemBean.TYPE_DOC_SLIDEIMG:
+                Intent intent = new Intent(getActivity(), ArticleReadActivity.class);
+                intent.putExtra("aid", itemBean.getDocumentId());
+                startActivity(intent);
+                break;
+            case NewsDetail.ItemBean.TYPE_SLIDE:
+//                ImageBrowseActivity.launch(getActivity(), itemBean);
+                break;
+            case NewsDetail.ItemBean.TYPE_ADVERT_TITLEIMG:
+            case NewsDetail.ItemBean.TYPE_ADVERT_SLIDEIMG:
+            case NewsDetail.ItemBean.TYPE_ADVERT_LONGIMG:
+//                AdvertActivity.launch(getActivity(), itemBean.getLink().getWeburl());
+                break;
+            case NewsDetail.ItemBean.TYPE_PHVIDEO:
 
+                break;
+        }
     }
 
     private void bannerToRead(NewsDetail.ItemBean itemBean) {

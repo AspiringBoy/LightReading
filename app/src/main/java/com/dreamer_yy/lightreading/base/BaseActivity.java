@@ -2,6 +2,8 @@ package com.dreamer_yy.lightreading.base;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import com.dreamer_yy.lightreading.MyApp;
 import com.dreamer_yy.lightreading.R;
+import com.dreamer_yy.lightreading.utils.StatusBarUtil;
 import com.dreamer_yy.lightreading.widget.BaseMultiStateView;
 import com.dreamer_yy.lightreading.widget.SimpleMultiStateView;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -113,6 +116,15 @@ public abstract class BaseActivity<T1 extends BaseContract.BasePresenter> extend
     @Override
     public View getView() {
         return mRootView;
+    }
+
+    /**
+     * 设置状态栏颜色
+     * @param color
+     * @param alpha
+     */
+    public void setStatusBarColor(@ColorInt int color, @IntRange(from = 0,to = 255) int alpha){
+        StatusBarUtil.setColor(this,color,alpha);
     }
 
     @Override
