@@ -191,7 +191,6 @@ public class ArticleReadActivity extends BaseActivity<ArticleReadPresenter> impl
             public void run() {
                 final String content = articleBean.getBody().getText();
                 String url = "javascript:show_content(\'" + content + "\')";
-                Log.d("Dreamer__YY:", "url: "+url);
                 webview.loadUrl(url);
                 showSuccess();
             }
