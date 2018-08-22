@@ -1,5 +1,6 @@
 package com.dreamer_yy.lightreading.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -13,7 +14,15 @@ import android.widget.AbsListView;
 import android.widget.ScrollView;
 
 /**
+ * 滑动返回工具类
+ * 只能包含一个子view
+ * 所属activity必须使用透明主题
+ * <style name="Theme.Swipe.Back" parent="AppTheme">
+ * <item name="android:windowIsTranslucent">true</item>
+ * <item name="android:windowBackground">@android:color/transparent</item>
+ * </style>
  * Created by Dreamer__YY on 2018/8/20.
+ *
  */
 
 public class DragBackLayout extends ViewGroup {
@@ -21,6 +30,8 @@ public class DragBackLayout extends ViewGroup {
     private Context mContext;
     //是否允许滑动返回
     private boolean enablePullBack;
+    //是否允许快速滑动返回
+    private boolean enableFlingBack = true;
     private float mLastRawX;
     private float mLastRawY;
     private float lastX;
@@ -31,6 +42,10 @@ public class DragBackLayout extends ViewGroup {
     private View scrollChild;
     //滑动返回临界值
     private float finishAnchor = 0;
+    //view最终滑动的距离
+    private float draggingOffset = 0;
+    //当前状态
+    private int draggingState = 0;
     //滑动模式
     private DragDirectMode dragDirectMode = DragDirectMode.EDGE;
     //滑动方向
@@ -41,7 +56,10 @@ public class DragBackLayout extends ViewGroup {
     private int verticalDragRange;
     //计算返回临界值的比例
     private static final float BACK_FACTOR = 0.5f;
+    //快速滑动返回的速度的最小值
+    private static final double AUTO_FINISHED_SPEED_LIMIT = 2000.0;
     private ViewDragHelper viewDragHelper;
+    private DragBackListener dragBackListener;
 
     private enum DragDirectMode {
         EDGE,
@@ -94,7 +112,7 @@ public class DragBackLayout extends ViewGroup {
                         float delY = Math.abs(mCurRawY - mLastRawY);
                         mLastRawX = mCurRawX;
                         mLastRawY = mCurRawY;
-                        if (dragEdge == DragEdge.TOP || dragEdge == DragEdge.TOP) {
+                        if (dragEdge == DragEdge.TOP || dragEdge == DragEdge.BOTTOM) {
                             setEnablePullBack(delY > delX);
                         } else if (dragEdge == DragEdge.LEFT || dragEdge == DragEdge.RIGHT) {
                             setEnablePullBack(delY < delX);
@@ -108,6 +126,31 @@ public class DragBackLayout extends ViewGroup {
 
     public void setEnablePullBack(boolean enablePullBack) {
         this.enablePullBack = enablePullBack;
+    }
+
+    public boolean isEnableFlingBack() {
+        return enableFlingBack;
+    }
+
+    public void setEnableFlingBack(boolean enableFlingBack) {
+        this.enableFlingBack = enableFlingBack;
+    }
+
+    public DragDirectMode getDragDirectMode() {
+        return dragDirectMode;
+    }
+
+    public void setDragDirectMode(DragDirectMode dragDirectMode) {
+        this.dragDirectMode = dragDirectMode;
+        if (dragDirectMode == DragDirectMode.VERCITAL) {
+            dragEdge = DragEdge.TOP;
+        } else if (dragDirectMode == DragDirectMode.HORIZONTAL) {
+            dragEdge = DragEdge.LEFT;
+        }
+    }
+
+    public void setDragBackListener(DragBackListener dragBackListener) {
+        this.dragBackListener = dragBackListener;
     }
 
     @Override
@@ -226,6 +269,7 @@ public class DragBackLayout extends ViewGroup {
 
     /**
      * 获取view滑动范围
+     *
      * @return
      */
     private int getDragRange() {
@@ -252,7 +296,8 @@ public class DragBackLayout extends ViewGroup {
 
         /**
          * 捕获要滑动的view
-         * @param child : 拖动的view
+         *
+         * @param child     : 拖动的view
          * @param pointerId
          * @return
          */
@@ -263,39 +308,95 @@ public class DragBackLayout extends ViewGroup {
 
         /**
          * 拖动状态监听
+         *
          * @param state : view拖动状态（0 : 静止状态；1 : 拖动状态； 2 : 放手后自由滑动状态）
          */
         @Override
         public void onViewDragStateChanged(int state) {
-            super.onViewDragStateChanged(state);
+            if (draggingState == state) return;
+            if ((draggingState == ViewDragHelper.STATE_DRAGGING || draggingState == ViewDragHelper.STATE_SETTLING) && state == ViewDragHelper.STATE_IDLE) {
+                if (draggingOffset == getDragRange()) {
+                    finishActivity();
+                }
+            }
+            draggingState = state;
         }
 
         /**
          * view位置变化监听
+         *
          * @param changedView
-         * @param left : view当前左边缘位置
-         * @param top : view当前上边缘位置
-         * @param dx : view在水平方向上的位移变化量(当前left - 原始left)
-         * @param dy : view在竖直方向上的位移变化量
+         * @param left        : view当前左边缘位置
+         * @param top         : view当前上边缘位置
+         * @param dx          : view在水平方向上的位移变化量(当前left - 原始left)
+         * @param dy          : view在竖直方向上的位移变化量
          */
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-            super.onViewPositionChanged(changedView, left, top, dx, dy);
+            switch (dragEdge) {
+                case RIGHT:
+                case LEFT:
+                    draggingOffset = Math.abs(left);
+                    break;
+                case BOTTOM:
+                case TOP:
+                    draggingOffset = Math.abs(top);
+                    break;
+            }
+
+            float fractionAnchor = draggingOffset / finishAnchor;
+            float fractionScreen = draggingOffset / getDragRange();
+            if (fractionAnchor > 1) fractionAnchor = 1;
+            if (fractionScreen > 1) fractionScreen = 1;
+            if (dragBackListener != null) dragBackListener.onViewPositionChanged(fractionAnchor, fractionScreen);
         }
 
         /**
          * 释放view触发
+         *
          * @param releasedChild : 释放的view
-         * @param xvel : 释放时view在X方向上的速度
-         * @param yvel : 释放时view在Y方向上的速度
+         * @param xvel          : 释放时view在X方向上的速度
+         * @param yvel          : 释放时view在Y方向上的速度
          */
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
-            super.onViewReleased(releasedChild, xvel, yvel);
+            if (draggingOffset == 0 || draggingOffset == getDragRange()) {
+                return;
+            }
+            boolean isBack = false;
+            if (enableFlingBack && backBySpeed(xvel, yvel)) {
+                isBack = true;
+            } else if (draggingOffset >= finishAnchor) {
+                isBack = true;
+            } else if (draggingOffset < finishAnchor) {
+                isBack = false;
+            }
+
+            int finalLeft = 0;
+            int finalTop = 0;
+            switch (dragEdge) {
+                case TOP:
+                    finalTop = isBack ? verticalDragRange : 0;
+                    smoothScrollToY(finalTop);
+                    break;
+                case BOTTOM:
+                    finalTop = isBack ? -verticalDragRange : 0;
+                    smoothScrollToY(finalTop);
+                    break;
+                case LEFT:
+                    finalLeft = isBack ? horizontalDragRange : 0;
+                    smoothScrollToX(finalLeft);
+                    break;
+                case RIGHT:
+                    finalLeft = isBack ? -horizontalDragRange : 0;
+                    smoothScrollToX(finalLeft);
+                    break;
+            }
         }
 
         /**
          * 设置view在水平方向的拖动范围
+         *
          * @param child
          * @return
          */
@@ -306,6 +407,7 @@ public class DragBackLayout extends ViewGroup {
 
         /**
          * 设置view在竖直方向上的拖动范围
+         *
          * @param child
          * @return
          */
@@ -316,42 +418,147 @@ public class DragBackLayout extends ViewGroup {
 
         /**
          * 设置view拖动之后的水平方向位置
+         *
          * @param child
-         * @param left : view当前左边缘位置
-         * @param dx : view在水平方向的位移量
-         * @return
+         * @param left  : view当前左边缘位置
+         * @param dx    : view在水平方向的位移量
+         * @return (默认返回0)
          */
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            return super.clampViewPositionHorizontal(child, left, dx);
+            int result = 0;
+
+            if (dragDirectMode == DragDirectMode.HORIZONTAL) {
+                if (!canChildScrollRight() && left > 0) {
+                    dragEdge = DragEdge.LEFT;
+                } else if (!canChildScrollLeft() && left < 0) {
+                    dragEdge = DragEdge.RIGHT;
+                }
+            }
+
+            if (dragEdge == DragEdge.LEFT && !canChildScrollRight() && left > 0) {
+                final int leftBound = getPaddingLeft();
+                final int rightBound = horizontalDragRange;
+                result = Math.min(Math.max(left, leftBound), rightBound);
+            } else if (dragEdge == DragEdge.RIGHT && !canChildScrollLeft() && left < 0) {
+                final int leftBound = -horizontalDragRange;
+                final int rightBound = getPaddingLeft();
+                result = Math.min(Math.max(left, leftBound), rightBound);
+            }
+            return result;
         }
 
         /**
          * 设置view拖动之后的竖直方向位置
+         *
          * @param child
-         * @param top : view当前上边缘位置
-         * @param dy : view在竖直方向的位移量
-         * @return
+         * @param top   : view当前上边缘位置
+         * @param dy    : view在竖直方向的位移量
+         * @return (默认返回0)
          */
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             int result = 0;
             if (dragDirectMode == DragDirectMode.VERCITAL) {
-                if (enablePullBack && top > 0) {
-
+                if (!canChildScrollDown() && top > 0) {
+                    dragEdge = DragEdge.TOP;
+                } else if (!canChildScrollUp() && top < 0) {
+                    dragEdge = DragEdge.BOTTOM;
                 }
             }
-            switch (dragEdge) {
-                case RIGHT:
-                case LEFT:
 
-                    break;
-                case BOTTOM:
-                case TOP:
-
-                    break;
+            if (dragEdge == DragEdge.TOP && top > 0 && !canChildScrollDown()) {
+                int topBound = getPaddingTop();
+                int bottomBound = verticalDragRange;
+                result = Math.min(Math.max(top, topBound), bottomBound);
+            } else if (dragEdge == DragEdge.BOTTOM && top < 0 && !canChildScrollUp()) {
+                int topBound = -verticalDragRange;
+                int bottomBound = getPaddingTop();
+                result = Math.min(Math.max(top, topBound), bottomBound);
             }
-            return super.clampViewPositionVertical(child, top, dy);
+            return result;
         }
     }
+
+    /**
+     * 在Y方向上移动view到finalTop
+     *
+     * @param finalTop : view最终的上边缘位置
+     */
+    private void smoothScrollToY(int finalTop) {
+        if (viewDragHelper.settleCapturedViewAt(0, finalTop)) {
+            ViewCompat.postInvalidateOnAnimation(this);
+        }
+    }
+
+    /**
+     * 在X方向上移动view到finalLeft
+     *
+     * @param finalLeft : view最终的左边缘位置
+     */
+    private void smoothScrollToX(int finalLeft) {
+        if (viewDragHelper.settleCapturedViewAt(finalLeft, 0)) {
+            ViewCompat.postInvalidateOnAnimation(this);
+        }
+    }
+
+    private boolean canChildScrollRight() {
+        return ViewCompat.canScrollHorizontally(scrollChild, 1);
+    }
+
+    private boolean canChildScrollLeft() {
+        return ViewCompat.canScrollHorizontally(scrollChild, -1);
+    }
+
+    private boolean canChildScrollUp() {
+        return ViewCompat.canScrollVertically(scrollChild, -1);
+    }
+
+    private boolean canChildScrollDown() {
+        return ViewCompat.canScrollVertically(scrollChild, 1);
+    }
+
+    /**
+     * 是否允许快速滑动返回
+     *
+     * @param xvel : X方向上的速度
+     * @param yvel : Y方向上的速度
+     * @return
+     */
+    private boolean backBySpeed(float xvel, float yvel) {
+        switch (dragEdge) {
+            case TOP:
+            case BOTTOM:
+                if (Math.abs(yvel) > Math.abs(xvel) && Math.abs(yvel) > AUTO_FINISHED_SPEED_LIMIT) {
+                    return dragEdge == DragEdge.TOP ? !canChildScrollDown() : !canChildScrollUp();
+                }
+                break;
+            case LEFT:
+            case RIGHT:
+                if (Math.abs(xvel) > Math.abs(yvel) && Math.abs(xvel) > AUTO_FINISHED_SPEED_LIMIT) {
+                    return dragEdge == DragEdge.LEFT ? !canChildScrollRight() : !canChildScrollLeft();
+                }
+                break;
+        }
+        return false;
+    }
+
+    private void finishActivity() {
+        Activity act = (Activity) getContext();
+        act.finish();
+        act.overridePendingTransition(0,android.R.anim.fade_out);
+    }
+
+    public interface DragBackListener {
+
+        /**
+         * view滑动比例监听.
+         *
+         * @param fractionAnchor 相对于滑动返回临界值的比例
+         * @param fractionScreen 相对整个滑动范围的临界值
+         */
+        void onViewPositionChanged(float fractionAnchor, float fractionScreen);
+
+    }
+
 }

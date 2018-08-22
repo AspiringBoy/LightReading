@@ -62,8 +62,6 @@ public class ArticleReadActivity extends BaseActivity<ArticleReadPresenter> impl
     RelativeLayout mConstraintLayout;
     @BindView(R.id.webview)
     WebView webview;
-    @BindView(R.id.state_view)
-    com.dreamer_yy.lightreading.widget.SimpleMultiStateView SimpleMultiStateView;
     @BindView(R.id.ScrollView)
     ObservableScrollView observableScrollView;
 
