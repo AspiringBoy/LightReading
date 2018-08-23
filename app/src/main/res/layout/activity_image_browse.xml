@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativelayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:fitsSystemWindows="true"
+    tools:context="com.dreamer_yy.lightreading.ui.news.activity.ImageBrowseActivity">
+
+    <com.dreamer_yy.lightreading.widget.DragBackLayout
+        android:id="@+id/drag_back_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.dreamer_yy.lightreading.widget.HackyViewPager
+            android:id="@+id/image_vp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></com.dreamer_yy.lightreading.widget.HackyViewPager>
+    </com.dreamer_yy.lightreading.widget.DragBackLayout>
+
+    <RelativeLayout
+        android:id="@+id/rll_top"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@android:color/black">
+
+        <ImageView
+            android:id="@+id/titlebar_left"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:src="@drawable/ic_close" />
+
+        <TextView
+            android:id="@+id/titlebar_name"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <com.dreamer_yy.lightreading.widget.MyScrollView
+        android:id="@+id/myscrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/black"
+        android:fadingEdge="none"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:padding="10dp"
+        android:scrollbars="none">
+
+        <TextView
+            android:id="@+id/img_desc_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+    </com.dreamer_yy.lightreading.widget.MyScrollView>
+</RelativeLayout>

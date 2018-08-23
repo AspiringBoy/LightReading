@@ -29,6 +29,7 @@ import com.dreamer_yy.lightreading.net.NewsApi;
 import com.dreamer_yy.lightreading.net.NewsUtils;
 import com.dreamer_yy.lightreading.ui.adapter.NewsDetailAdapter;
 import com.dreamer_yy.lightreading.ui.news.activity.ArticleReadActivity;
+import com.dreamer_yy.lightreading.ui.news.activity.ImageBrowseActivity;
 import com.dreamer_yy.lightreading.ui.news.contract.DetailContract;
 import com.dreamer_yy.lightreading.ui.news.presenter.DetailPresenter;
 import com.dreamer_yy.lightreading.utils.ContextUtils;
@@ -226,7 +227,7 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
                 startActivity(intent);
                 break;
             case NewsDetail.ItemBean.TYPE_SLIDE:
-//                ImageBrowseActivity.launch(getActivity(), itemBean);
+                ImageBrowseActivity.launch(getActivity(), itemBean);
                 break;
             case NewsDetail.ItemBean.TYPE_ADVERT_TITLEIMG:
             case NewsDetail.ItemBean.TYPE_ADVERT_SLIDEIMG:
@@ -250,7 +251,7 @@ public class DetailFragment extends BaseFragment<DetailPresenter> implements Det
                 startActivity(intent);
                 break;
             case NewsUtils.TYPE_SLIDE:
-//                ImageBrowseActivity.launch(getActivity(), itemBean);
+                ImageBrowseActivity.launch(getActivity(), itemBean);
                 break;
             case NewsUtils.TYPE_ADVERT:
 //                AdvertActivity.launch(getActivity(), itemBean.getLink().getWeburl());

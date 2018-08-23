@@ -6,6 +6,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class DragBackLayout extends ViewGroup {
 
     private Context mContext;
     //是否允许滑动返回
-    private boolean enablePullBack;
+    private boolean enablePullBack = true;
     //是否允许快速滑动返回
     private boolean enableFlingBack = true;
     private float mLastRawX;
@@ -60,14 +61,16 @@ public class DragBackLayout extends ViewGroup {
     private static final double AUTO_FINISHED_SPEED_LIMIT = 2000.0;
     private ViewDragHelper viewDragHelper;
     private DragBackListener dragBackListener;
+    private float delX;
+    private float delY;
 
-    private enum DragDirectMode {
+    public enum DragDirectMode {
         EDGE,
         VERCITAL, //竖直滑动
         HORIZONTAL //水平滑动
     }
 
-    private enum DragEdge {
+    public enum DragEdge {
         LEFT,//拖动左边缘(向右滑动view)
 
         TOP,//拖动上边缘(向下滑动view)
@@ -97,27 +100,32 @@ public class DragBackLayout extends ViewGroup {
     }
 
     private void checkPullEnable() {
-        setOnTouchListener(new OnTouchListener() {
+        setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mLastRawX = event.getRawX();
-                        mLastRawY = event.getRawY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        mCurRawX = event.getRawX();
-                        mCurRawY = event.getRawY();
-                        float delX = Math.abs(mCurRawX - mLastRawX);
-                        float delY = Math.abs(mCurRawY - mLastRawY);
-                        mLastRawX = mCurRawX;
-                        mLastRawY = mCurRawY;
-                        if (dragEdge == DragEdge.TOP || dragEdge == DragEdge.BOTTOM) {
+            public boolean onTouch(View v, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    mLastRawY = motionEvent.getRawY();
+                    mLastRawX = motionEvent.getRawX();
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    mCurRawY = motionEvent.getRawY();
+                    mCurRawX = motionEvent.getRawX();
+
+                    delY = Math.abs(mCurRawY - mLastRawY);
+                    mLastRawY = mCurRawY;
+
+                    delX = Math.abs(mCurRawX - mLastRawX);
+                    mLastRawX = mCurRawX;
+                    Log.d("Dreamer__YY:", "delX: "+delX);
+                    Log.d("Dreamer__YY:", "delY: "+delY);
+                    switch (dragEdge) {
+                        case TOP:
+                        case BOTTOM:
                             setEnablePullBack(delY > delX);
-                        } else if (dragEdge == DragEdge.LEFT || dragEdge == DragEdge.RIGHT) {
+                        case LEFT:
+                        case RIGHT:
                             setEnablePullBack(delY < delX);
-                        }
-                        break;
+                            break;
+                    }
                 }
                 return false;
             }
@@ -208,6 +216,8 @@ public class DragBackLayout extends ViewGroup {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean handled = false;
         boolean intercepted = false;
+        float x = ev.getRawX();
+        float y = ev.getRawY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 lastX = ev.getRawX();
@@ -215,23 +225,54 @@ public class DragBackLayout extends ViewGroup {
                 handled = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float offsetX = Math.abs(ev.getRawX() - lastX);
-                float offsetY = Math.abs(ev.getRawY() - lastY);
+                float offsetX = Math.abs(x - lastX);
+                float offsetY = Math.abs(y - lastY);
                 if (offsetY < offsetX) {//不拦截
                     handled = true;
                 }
-                lastX = ev.getRawX();
-                lastY = ev.getRawY();
                 break;
             case MotionEvent.ACTION_UP:
                 handled = false;
                 break;
         }
+        lastX = x;
+        lastY = y;
         if (!handled) {
             intercepted = viewDragHelper.shouldInterceptTouchEvent(ev);
         } else viewDragHelper.cancel();
         ensureTarget();
         return intercepted ? intercepted : super.onInterceptTouchEvent(ev);
+
+        /*boolean isIntercepted = false;
+        int x = (int) ev.getX();
+        int y = (int) ev.getY();
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isIntercepted = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int deltax = x - lastX;
+                int deltay = y - lastY;
+                if (Math.abs(deltay) > Math.abs(deltax)) {
+                    isIntercepted = false;
+                } else {
+                    isIntercepted = true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                isIntercepted = false;
+                break;
+        }
+        lastX = x;
+        lastY = y;
+        boolean handled = false;
+        ensureTarget();
+        if (!isIntercepted) {
+            handled = viewDragHelper.shouldInterceptTouchEvent(ev);
+        } else {
+            viewDragHelper.cancel();
+        }
+        return !handled ? super.onInterceptTouchEvent(ev) : handled;*/
     }
 
     private void ensureTarget() {
