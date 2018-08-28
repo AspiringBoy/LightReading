@@ -7,6 +7,7 @@
         android:id="@+id/photoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerInside"
         android:layout_centerInParent="true"
         android:contentDescription="@string/app_name" />
 

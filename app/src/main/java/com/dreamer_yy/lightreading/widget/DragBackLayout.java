@@ -108,7 +108,7 @@ public class DragBackLayout extends ViewGroup {
                     mLastRawX = motionEvent.getRawX();
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                     mCurRawY = motionEvent.getRawY();
-                    mCurRawX = motionEvent.getRawX();
+                    mLastRawX = motionEvent.getRawX();
 
                     delY = Math.abs(mCurRawY - mLastRawY);
                     mLastRawY = mCurRawY;
